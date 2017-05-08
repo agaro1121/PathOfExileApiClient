@@ -1,53 +1,55 @@
 package parsing
 
-import de.heikoseeberger.akkahttpcirce.CirceSupport
-import io.circe.Decoder.Result
+import java.io.File
+import java.nio.file.Paths
+
+import akka.actor.ActorSystem
+import akka.http.scaladsl.model.Uri.Path
+import akka.stream.ActorMaterializer
+import akka.stream.scaladsl.FileIO
+import akka.util.ByteString
+import io.circe.{Json, ParsingFailure}
 import org.scalatest.{Matchers, WordSpec}
-import io.circe._
-import io.circe.generic.auto._
 import io.circe.parser._
-import io.circe.syntax._
 import models.{ApiResponse, Item, Property}
-import shapeless.HNil
-import shapeless.::
-import io.circe.shapes._
+import marshalling.CirceMarshalling._
+
+import scala.concurrent.{Await, Future}
+import scala.concurrent.duration._
+import scala.io.BufferedSource
+import scala.language.postfixOps
 
 class ParsingTest extends WordSpec with Matchers {
 
-  "Short api response" should {
-    "deserialize short response successfully" in {
-      import MockPayload.responseShort
-      val json: Either[ParsingFailure, Json] = parse(responseShort)
-      val apiResponse = json.map(_.as[ApiResponse])
-      // println(apiResponse)
-    }
-
-    "deserialize medium response successfully" in {
-      import MockPayload.responseMedium
-      val json: Either[ParsingFailure, Json] = parse(responseMedium)
-      val apiResponse = json.map(_.as[ApiResponse])
-      // println(apiResponse)
-    }
+  "Api Response" should {
 
     "deserialize response successfully" in {
       import MockPayload.response
-      val json= parse(response)
+      val json = parse(response)
       val apiResponse = json.map(_.as[ApiResponse])
       println(apiResponse)
     }
 
-    "deserialize Property successfully" in {
-      import MockPayload.property
-      val res = parse(property).map(_.as[Property[String :: Int :: HNil]])
-      // println(res)
+    "deserialize response2 successfully" in {
+      implicit val actorSystem = ActorSystem("test")
+      implicit val mat = ActorMaterializer()
+      import actorSystem.dispatcher
+
+      val path = getClass.getResource("/ApiResponse.txt").getPath
+      val file = new File(path)
+
+
+      val response: Future[String] = FileIO.fromPath(file.toPath)
+        .runFold(ByteString.empty)(_ ++ _)
+        .map(_.utf8String)
+
+      val resp = Await.result(response, 5 seconds)
+      val json = parse(resp)
+      val apiResponse = json.map(_.as[ApiResponse])
+      println(apiResponse)
+
     }
 
-    "deserialize item successfully" in {
-      import MockPayload.item
-      val json: Either[ParsingFailure, Json] = parse(item)
-      val apiResponse = json.map(_.as[Item])
-      // println(apiResponse)
-    }
   }
 
 }
