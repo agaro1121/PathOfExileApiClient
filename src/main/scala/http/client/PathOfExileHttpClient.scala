@@ -35,7 +35,7 @@ class PathOfExileHttpClient(config: Config)(implicit actorSystem: ActorSystem, m
     }
   }
 
-  def getApiResponse: Future[Either[String, ApiResponse]] = handleResponse(getResponse).map(_.bisequence).flatten
+  def getApiResponse: Future[Either[String, ApiResponse]] = handleResponse(getResponse).flatMap(_.bisequence)
 
 }
 

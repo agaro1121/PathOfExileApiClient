@@ -4,7 +4,8 @@ import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
 import config.Config
 import http.client.PathOfExileHttpClient
-import scala.concurrent.Await
+import models.ApiResponse
+import scala.concurrent.{Await, Future}
 import scala.concurrent.duration._
 import language.postfixOps
 
@@ -15,9 +16,10 @@ object Main extends App {
 
   val client = PathOfExileHttpClient(Config.fromReference)
 
-  private val response = client.getApiResponse
+  //TODO: Create error types so it's `Either[Error, ApiResponse]` instead
+  private val response: Future[Either[String, ApiResponse]] = client.getApiResponse
 
-  val result = Await.result(response, 10 seconds)
+  val result: Either[String, ApiResponse] = Await.result(response, 10 seconds)
 
   println(result)
 
