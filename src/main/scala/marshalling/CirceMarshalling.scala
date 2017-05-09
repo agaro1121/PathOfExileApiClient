@@ -1,12 +1,13 @@
 package marshalling
 
+import de.heikoseeberger.akkahttpcirce.CirceSupport
 import io.circe.generic.semiauto._
 import io.circe.shapes.LabelledHListInstances
 import io.circe.{Decoder, ObjectEncoder}
 import models._
 
 
-trait CirceMarshalling extends LabelledHListInstances {
+trait CirceMarshalling extends LabelledHListInstances with CirceSupport {
 
   implicit lazy val PropertyDecoder: Decoder[Property] = deriveDecoder[Property]
   implicit lazy val PropertyEncoder: ObjectEncoder[Property] = deriveEncoder[Property]

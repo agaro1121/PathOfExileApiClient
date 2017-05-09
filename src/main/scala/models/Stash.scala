@@ -1,7 +1,7 @@
 package models
 
 case class Stash(
-  accountName: String,
+  accountName: Option[String], //TODO: optional?
   lastCharacterName: String,
   id: String,
   stash: String,
