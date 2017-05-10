@@ -50,6 +50,26 @@ class ParsingTest extends WordSpec with Matchers {
 
     }
 
+    "deserialize response3 successfully" in {
+      implicit val actorSystem = ActorSystem("test")
+      implicit val mat = ActorMaterializer()
+      import actorSystem.dispatcher
+
+      val path = getClass.getResource("/ApiResponse2.txt").getPath
+      val file = new File(path)
+
+
+      val response: Future[String] = FileIO.fromPath(file.toPath)
+        .runFold(ByteString.empty)(_ ++ _)
+        .map(_.utf8String)
+
+      val resp = Await.result(response, 5 seconds)
+      val json = parse(resp)
+      val apiResponse = json.map(_.as[ApiResponse])
+      println(apiResponse)
+
+    }
+
   }
 
 }

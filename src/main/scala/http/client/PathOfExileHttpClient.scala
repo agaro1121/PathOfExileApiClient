@@ -29,17 +29,26 @@ class PathOfExileHttpClient(config: Config)(implicit actorSystem: ActorSystem, m
       httpResponse =>
         httpResponse.status match {
           case StatusCodes.OK =>
+            println("*** status OK")
             Right(Unmarshal(httpResponse.entity).to[ApiResponse])
 
           case _ =>
+            println("*** Not 200 response")
             Left(
               Unmarshal(httpResponse.entity)
                 .to[String]
-                .map(BadHttpStatusException(httpResponse.status, _))
+                .map{ body =>
+                  println(s"body=$body")
+                  BadHttpStatusException(httpResponse.status, body)
+                }
             )
         }
     }.recover {
-      case throwable => Left(Future.successful(GeneralHttpException(throwable.getMessage)))
+      case throwable =>
+        println(s"*** throwable=${throwable.getMessage}")
+        println(s"*** stack trace=\n${throwable.getStackTrace.mkString("\n")}")
+
+        Left(Future.successful(GeneralHttpException(throwable.getMessage)))
     }
   }
 
