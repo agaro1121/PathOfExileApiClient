@@ -4,9 +4,9 @@ version := "1.0"
 
 scalaVersion := "2.12.1"
 
-libraryDependencies += "com.typesafe.akka" %% "akka-http" % "10.0.4"
+libraryDependencies += "com.typesafe.akka" %% "akka-http" % "10.0.6"
+libraryDependencies += "com.typesafe.akka" %% "akka-testkit" % "2.5.1"
 
-resolvers += Resolver.bintrayRepo("hseeberger", "maven")
 
 val circeVersion = "0.7.0"
 libraryDependencies ++= Seq(
@@ -16,6 +16,7 @@ libraryDependencies ++= Seq(
   "io.circe" %% "circe-shapes"
 ).map(_ % circeVersion)
 
+resolvers += Resolver.bintrayRepo("hseeberger", "maven")
 libraryDependencies += "de.heikoseeberger" %% "akka-http-circe" % "1.12.0"
 
 libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.1" % "test"

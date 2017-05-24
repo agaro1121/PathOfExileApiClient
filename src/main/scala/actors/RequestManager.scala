@@ -29,8 +29,11 @@ class RequestManager extends Actor {
     case StartNewJob =>
       val requestOwner = context.actorOf(RequestOwner.props)
       val jobId = UUID.randomUUID()
-      secretaries += jobId -> requestOwner
       requestOwner ! RequestOwner.StartNewJob(jobId)
+
+    case NewJobStarted(jobId) =>
+      val requestOwner = sender()
+      secretaries += jobId -> requestOwner
 
   }
 }
