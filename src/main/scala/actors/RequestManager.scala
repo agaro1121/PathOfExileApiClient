@@ -1,39 +1,37 @@
 package actors
 
 import java.util.UUID
-import akka.actor.{Actor, ActorRef}
-import shapeless.tag.@@
+
+import akka.actor.{Actor, ActorRef, ActorRefFactory}
+
 import Map.empty
+import RequestManager._
+import akka.event.LoggingReceive
 
 object RequestManager {
   case object StartNewJob
   case class NewJobStarted(id: UUID)
   type JobId = UUID
-  type JobOwner = ActorRef @@ RequestOwner
 }
 
-/*
-* How to test:
-* 1) Check internal state of actor
-* 2) Intercept message?
-* 3) Refer to Akka In Action
-* TODO: Test
-* */
-class RequestManager extends Actor {
-  import RequestManager._
+class RequestManager(childMaker: ActorRefFactory => ActorRef) extends Actor {
 
-  var secretaries: Map[JobId, JobOwner] = empty
+  var secretaries: Map[JobId, ActorRef] = empty
 
-  override def receive: Receive = {
+  override def receive: Receive = LoggingReceive {
 
     case StartNewJob =>
-      val requestOwner = context.actorOf(RequestOwner.props)
+      val requestOwner = childMaker(context)
       val jobId = UUID.randomUUID()
       requestOwner ! RequestOwner.StartNewJob(jobId)
 
     case NewJobStarted(jobId) =>
       val requestOwner = sender()
+      /*
+      * TODO: Test watch functionality
+      * TODO: add methods in receive function to check if secretaries die
+      * */
+      context.watch(requestOwner)
       secretaries += jobId -> requestOwner
-
   }
 }
