@@ -16,7 +16,7 @@ class PathOfExileHttpClient(config: Config)(implicit actorSystem: ActorSystem, m
 
   import actorSystem.dispatcher
 
-  private def getResponse(stashId: Option[String] = None): Future[HttpResponse] = {
+  private def getResponse(stashId: Option[String]): Future[HttpResponse] = {
     val url =
       if (stashId.isDefined) s"${config.url}?id=${stashId.get}"
       else config.url
@@ -45,22 +45,19 @@ class PathOfExileHttpClient(config: Config)(implicit actorSystem: ActorSystem, m
         }
     }.recover {
       case throwable =>
-        println(s"*** throwable=${throwable.getMessage}")
+        println(s"*** throwable=${throwable.getMessage}") //TODO: Remove these
         println(s"*** stack trace=\n${throwable.getStackTrace.mkString("\n")}")
 
         Left(Future.successful(GeneralHttpException(throwable.getMessage)))
     }
   }
 
-  def getApiResponse: Future[Either[HttpException, ApiResponse]] =
-    handleResponse(getResponse()).flatMap(_.bisequence)
-
-  def getApiResponse(stashId: Option[String]): Future[Either[HttpException, ApiResponse]] =
+  def getApiResponse(stashId: Option[String] = None): Future[Either[HttpException, ApiResponse]] =
     handleResponse(getResponse(stashId)).flatMap(_.bisequence)
 
 }
 
 object PathOfExileHttpClient {
-  def apply(config: Config)(implicit actorSystem: ActorSystem, mat: Materializer): PathOfExileHttpClient =
+  def apply(config: Config = Config.fromReference)(implicit actorSystem: ActorSystem, mat: Materializer): PathOfExileHttpClient =
     new PathOfExileHttpClient(config)
 }

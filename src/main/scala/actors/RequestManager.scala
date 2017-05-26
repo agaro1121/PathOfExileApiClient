@@ -1,17 +1,15 @@
 package actors
 
 import java.util.UUID
-
-import akka.actor.{Actor, ActorRef, ActorRefFactory}
-
+import akka.actor.{Actor, ActorRef, ActorRefFactory, Terminated}
 import Map.empty
 import RequestManager._
 import akka.event.LoggingReceive
 
 object RequestManager {
-  case object StartNewJob
-  case class NewJobStarted(id: UUID)
   type JobId = UUID
+  case object StartNewJob
+  case class NewJobStarted(id: JobId)
 }
 
 class RequestManager(childMaker: ActorRefFactory => ActorRef) extends Actor {
@@ -27,11 +25,21 @@ class RequestManager(childMaker: ActorRefFactory => ActorRef) extends Actor {
 
     case NewJobStarted(jobId) =>
       val requestOwner = sender()
-      /*
-      * TODO: Test watch functionality
-      * TODO: add methods in receive function to check if secretaries die
-      * */
       context.watch(requestOwner)
       secretaries += jobId -> requestOwner
+
+      /*
+      * TODO: Can the deadSecretary have it's state recovered ???
+      * Maybe save actor's state using Akka Persistence ???
+      * */
+    case Terminated(deadSecretary) =>
+      secretaries.find {
+        case (_, secretary) =>
+          secretary == deadSecretary
+      } foreach {
+        case (jobId, _) =>
+          secretaries -= jobId
+      }
+
   }
 }

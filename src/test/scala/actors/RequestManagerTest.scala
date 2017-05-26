@@ -1,8 +1,8 @@
 package actors
 
-import akka.actor.{ActorRefFactory, ActorSystem, Props}
+import akka.actor.{ActorRefFactory, ActorSystem, PoisonPill, Props}
 import akka.testkit.{ImplicitSender, TestActorRef, TestKit, TestProbe}
-import org.scalatest.{Matchers, Pending, WordSpecLike}
+import org.scalatest.{Matchers, WordSpecLike}
 
 import scala.language.postfixOps
 
@@ -36,13 +36,17 @@ class RequestManagerTest extends TestKit(ActorSystem("RequestManagerTest"))
     }
 
     "watch the lifecycle of a new secretary" in {
-      /*
-      * TODO: create fake requestOwner
-      * TODO: create fake requestManager
-      * TODO: Send PoisonPill to fake requestOwner
-      * TODO: test if requestManager receives notification
-      * */
-      Pending
+      val requestOwner: TestActorRef[RequestOwner] =
+        TestActorRef(Props(classOf[RequestOwner], (_: ActorRefFactory) => fakeChild.ref), "RequestOwner")
+
+      val requestManager: TestActorRef[RequestManager] =
+        TestActorRef(Props(classOf[RequestManager], (_: ActorRefFactory) => requestOwner), "RequestManager")
+
+      requestManager ! RequestManager.StartNewJob
+      requestManager.underlyingActor.secretaries.size shouldBe 1
+
+      requestOwner ! PoisonPill
+      requestManager.underlyingActor.secretaries.size shouldBe 0
     }
 
   }
