@@ -2,12 +2,20 @@ package actors
 
 import akka.actor.{ActorRefFactory, ActorSystem, PoisonPill, Props}
 import akka.testkit.{ImplicitSender, TestActorRef, TestKit, TestProbe}
-import org.scalatest.{Matchers, WordSpecLike}
+import org.scalatest.{BeforeAndAfterAll, Matchers, WordSpecLike}
 
 import scala.language.postfixOps
 
 class RequestManagerTest extends TestKit(ActorSystem("RequestManagerTest"))
-  with WordSpecLike with Matchers with ImplicitSender {
+  with WordSpecLike with Matchers with ImplicitSender with BeforeAndAfterAll {
+
+
+  override protected def afterAll(): Unit = {
+    system.terminate()
+      .andThen{
+        case _ => super.afterAll()
+      }
+  }
 
   val fakeChild = TestProbe("TestProbe")
 

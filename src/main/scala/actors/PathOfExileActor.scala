@@ -22,7 +22,13 @@ class PathOfExileActor extends Actor {
   override def receive: Receive = {
 
     case GetStash(optionalStashId) =>
-
+      client.getApiResponse(optionalStashId)
+      .flatMap {
+        case Left(ex) =>
+          // TODO: log the error
+          client.getApiResponse(optionalStashId)
+        case Right(apiResponse) => ???
+      }
 
 
   }
