@@ -24,3 +24,6 @@ libraryDependencies += "de.heikoseeberger" %% "akka-http-circe" % "1.12.0"
 libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.1" % "test"
 
 libraryDependencies += "org.typelevel" %% "cats" % "0.9.0"
+
+//libraryDependencies += "ch.qos.logback" % "logback-classic" % "1.1.7"
+libraryDependencies += "com.typesafe.scala-logging" %% "scala-logging" % "3.5.0"

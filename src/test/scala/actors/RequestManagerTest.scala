@@ -9,6 +9,8 @@ import scala.language.postfixOps
 class RequestManagerTest extends TestKit(ActorSystem("RequestManagerTest"))
   with WordSpecLike with Matchers with ImplicitSender with BeforeAndAfterAll {
 
+  import system.dispatcher
+
 
   override protected def afterAll(): Unit = {
     system.terminate()
