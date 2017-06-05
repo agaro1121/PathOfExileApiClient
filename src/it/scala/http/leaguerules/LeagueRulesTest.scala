@@ -2,7 +2,7 @@ package http.leaguerules
 
 import cats.data.ValidatedNel
 import common.PathOfExileTestSuite
-import exception.{BadLeagueEndpointArgument, HttpException}
+import exception.{BadLeagueEndpointArgument, HttpError}
 import models.leaguerules.{LeagueRule, LeagueRules}
 import models.leagues.League
 
@@ -13,21 +13,25 @@ class LeagueRulesTest
 
   "League Rules Endpoint" should {
     "get a 200(Ok) and unmarshal to `LeagueRule` " in {
-      val response: Future[Either[HttpException, LeagueRule]] =
+      val response: Future[Either[HttpError, LeagueRule]] =
         pathOfExileClient.getLeagueRule(4)
 
       whenReady(response) { result =>
-        result.isRight shouldBe true
+        withClue(s"result was: $result") {
+          result.isRight shouldBe true
+        }
       }
 
     }
 
     "get a 200(Ok) and unmarshal to `LeagueRules` " in {
-      val response: Future[Either[HttpException, LeagueRules]] =
+      val response: Future[Either[HttpError, LeagueRules]] =
         pathOfExileClient.getLeagueRules
 
       whenReady(response) { result =>
-        result.isRight shouldBe true
+        withClue(s"result was: $result") {
+          result.isRight shouldBe true
+        }
       }
 
     }

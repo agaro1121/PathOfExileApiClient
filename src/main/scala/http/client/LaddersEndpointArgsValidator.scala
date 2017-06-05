@@ -14,26 +14,26 @@ trait LaddersEndpointArgsValidator {
 
     limit match {
       case Some(value) if value > MaxLimit =>
-        invalidNel(BadLimitException(s"The value of limit can not be greater than $MaxLimit"))
+        invalidNel(BadLimit(s"The value of limit can not be greater than $MaxLimit"))
       case _ => valid(limit)
     }
   }
 
   def validateDifficulty(`type`: Option[LadderType], difficulty: Option[LadderDifficulty]):
-    ValidatedNel[BadDifficultyException, Option[LadderDifficulty]] = {
+    ValidatedNel[BadDifficulty, Option[LadderDifficulty]] = {
       (`type`, difficulty) match {
         case (Some(someType), Some(_)) if !(someType == LABYRINTH) =>
-          invalidNel(BadDifficultyException("Difficulty can only be set when type is Labyrinth"))
+          invalidNel(BadDifficulty("Difficulty can only be set when type is Labyrinth"))
 
         case _ => valid(difficulty)
       }
     }
 
   def validateStart(`type`: Option[LadderType], start: Option[String]):
-    ValidatedNel[BadStartException, Option[String]] = {
+    ValidatedNel[BadStart, Option[String]] = {
       (`type`, start) match {
         case (Some(someType), Some(_)) if !(someType == LABYRINTH) =>
-          invalidNel(BadStartException("Difficulty can only be set when type is Labyrinth"))
+          invalidNel(BadStart("Difficulty can only be set when type is Labyrinth"))
 
         case _ => valid(start)
       }

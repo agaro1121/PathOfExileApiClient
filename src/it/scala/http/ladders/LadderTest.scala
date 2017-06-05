@@ -2,7 +2,7 @@ package http.ladders
 
 import cats.data.ValidatedNel
 import common.PathOfExileTestSuite
-import exception.{BadLaddersEndpointArgument, HttpException}
+import exception.{BadLaddersEndpointArgument, HttpError}
 import models.ladders.Ladder
 import scala.concurrent.Future
 
@@ -13,12 +13,14 @@ class LadderTest
   "Ladder Test" should {
 
     "get a 200(Ok) and unmarshal to `Ladder` " in {
-      val response: ValidatedNel[BadLaddersEndpointArgument, Future[Either[HttpException, Ladder]]] =
+      val response: ValidatedNel[BadLaddersEndpointArgument, Future[Either[HttpError, Ladder]]] =
         pathOfExileClient.getLadder("Hardcore")
 
       response.foreach { resp =>
         whenReady(resp) { result =>
-          result.isRight shouldBe true
+          withClue(s"result was: $result") {
+            result.isRight shouldBe true
+          }
         }
       }
     }

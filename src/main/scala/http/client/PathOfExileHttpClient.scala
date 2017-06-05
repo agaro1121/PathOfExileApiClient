@@ -3,10 +3,8 @@ package http.client
 import scala.concurrent.{ExecutionContext, Future}
 import akka.actor.ActorSystem
 import akka.http.scaladsl.unmarshalling.{Unmarshal, Unmarshaller}
-import akka.http.scaladsl.Http
 import akka.http.scaladsl.model._
 import akka.stream.Materializer
-import akka.http.scaladsl.model.Uri.{Path, Query}
 import models.ladders.{Ladder, LadderType}
 import models.leaguerules.{LeagueRule, LeagueRules}
 import models.pvpmatches.PvpMatches
@@ -15,19 +13,17 @@ import models.stashes.Stashes
 import models.leagues.{LadderDifficulty, League, LeagueType, Leagues}
 import exception._
 import io.circe.Decoder
-import com.typesafe.scalalogging.LazyLogging
 import cats.implicits._
 import cats.data.{EitherT, Validated, ValidatedNel}
 import Validated._
+import marshalling.AllMarshalling
 
-class PathOfExileHttpClient(config: PathOfExileHttpConfig)(implicit actorSystem: ActorSystem, mat: Materializer)
-  extends LazyLogging with allmashalling with allValidators {
-
+class PathOfExileHttpClient(val config: PathOfExileHttpConfig)(implicit val actorSystem: ActorSystem, val mat: Materializer)
+  extends HttpClientPlumbing with AllMarshalling with AllValidators {
   import PathOfExileHttpClient.syntax._
-  import actorSystem.dispatcher
-  private val httpClient = Http()
 
   /**
+   *
    * Retrieves a list of stashes, accounts, and items as described above in the Introduction section.
    *
    * If there are no changes, this page will show as empty.
@@ -37,10 +33,11 @@ class PathOfExileHttpClient(config: PathOfExileHttpConfig)(implicit actorSystem:
    *                Default: 0
    *
    */
-  def getStashes(stashId: Option[String] = None): Future[Either[HttpException, Stashes]] =
+  def getStashes(stashId: Option[String] = None): Future[Either[HttpError, Stashes]] =
     getAndHandleResponse(config.`public-stash-tabs`, stashId.map(id => Map("id" -> id))).as[Stashes]
 
   /**
+   *
    * Get a list of current and past leagues.
    *
    * @param type    Possible values:
@@ -65,7 +62,7 @@ class PathOfExileHttpClient(config: PathOfExileHttpConfig)(implicit actorSystem:
     compact: Option[Int] = None,
     limit: Option[Int] = None,
     offset: Option[Int] = None
-  ): ValidatedNel[BadLeaguesEndpointArgument, Future[Either[HttpException, Leagues]]] = {
+  ): ValidatedNel[BadLeaguesEndpointArgument, Future[Either[HttpError, Leagues]]] = {
 
     (validateSeason(`type`, season) |@| validateCompact(compact) |@| validateLimit(compact, limit)).map {
       (validSeason, validCompact, validLimit) =>
@@ -85,6 +82,7 @@ class PathOfExileHttpClient(config: PathOfExileHttpConfig)(implicit actorSystem:
   }
 
   /**
+   *
    * Get a single league by id.
    *
    * @param id The id (name) of the league.
@@ -112,7 +110,7 @@ class PathOfExileHttpClient(config: PathOfExileHttpConfig)(implicit actorSystem:
     ladderLimit: Option[Int] = None,
     ladderOffset: Option[Int] = None,
     ladderTrack: Option[Int] = None
-  ): ValidatedNel[BadLeagueEndpointArgument, Future[Either[HttpException, League]]] = {
+  ): ValidatedNel[BadLeagueEndpointArgument, Future[Either[HttpError, League]]] = {
 
     (validateLadder(ladder) |@| validateLadderLimit(ladder, ladderLimit) |@|
       validateLadderOffset(ladder, ladderOffset) |@| validateLadderTrack(ladder, ladderTrack)).map {
@@ -132,7 +130,9 @@ class PathOfExileHttpClient(config: PathOfExileHttpConfig)(implicit actorSystem:
   }
 
   /**
+   *
    * Get a ladder by league id.
+   *
    * There is a restriction in place on the last ladder entry you are able to retrieve which is set to 15000.
    *
    * @param id The id (name) of the league for the ladder you want to retrieve.
@@ -165,7 +165,7 @@ class PathOfExileHttpClient(config: PathOfExileHttpConfig)(implicit actorSystem:
     track: Option[Boolean] = None,
     difficulty: Option[LadderDifficulty] = None,
     start: Option[String] = None //TODO: validate this is a proper timestamp !!!!
-  ): ValidatedNel[BadLaddersEndpointArgument, Future[Either[HttpException, Ladder]]] = {
+  ): ValidatedNel[BadLaddersEndpointArgument, Future[Either[HttpError, Ladder]]] = {
 
     (validateLimit(limit) |@| validateDifficulty(`type`, difficulty) |@| validateStart(`type`, start)).map {
       (validLimit, validDifficulty, validStart) =>
@@ -189,7 +189,7 @@ class PathOfExileHttpClient(config: PathOfExileHttpConfig)(implicit actorSystem:
    * Get a list of all possible league rules.
    *
    */
-  def getLeagueRules: Future[Either[HttpException, LeagueRules]] =
+  def getLeagueRules: Future[Either[HttpError, LeagueRules]] =
     getAndHandleResponse(config.`league-rules`, None).as[LeagueRules]
 
   /**
@@ -197,60 +197,29 @@ class PathOfExileHttpClient(config: PathOfExileHttpConfig)(implicit actorSystem:
    *
    * @param id The rule id.
    */
-  def getLeagueRule(id: Int): Future[Either[HttpException, LeagueRule]] =
+  def getLeagueRule(id: Int): Future[Either[HttpError, LeagueRule]] =
     getAndHandleResponse(config.`league-rules`, Some(Map("id" -> id.toString))).as[LeagueRule]
 
   /**
+   *
    * Get a list of PvP matches.
    *
    * @param seasonId Set this to get PvP matches for a particular season.
    *                 Leave this unset to retrieve all upcoming PvP matches.
+   *
    */
-  def getPvpMatches(seasonId: Option[String] = None): Future[Either[HttpException, PvpMatches]] =
+  def getPvpMatches(seasonId: Option[String] = None): Future[Either[HttpError, PvpMatches]] =
     getAndHandleResponse(config.`pvp-matches`, seasonId.map(sid => Map("seasonId" -> sid.toString))).as[PvpMatches]
-
-  private def getAndHandleResponse(endpoint: String, queryParams: Option[Map[String, String]]): Future[Either[Future[HttpException], ResponseEntity]] =
-    handleResponse(getResponse(endpoint, queryParams))
-
-  private def handleResponse(response: Future[HttpResponse]): Future[Either[Future[HttpException], ResponseEntity]] = {
-    response.map {
-      httpResponse =>
-        httpResponse.status match {
-          case StatusCodes.OK =>
-            Right(httpResponse.entity)
-
-          case _ =>
-            Left(
-              Unmarshal(httpResponse.entity)
-                .to[String]
-                .map { body =>
-                  BadHttpStatusException(httpResponse.status, body)
-                }
-            )
-        }
-    }.recover {
-      case throwable =>
-        Left(Future.successful(GeneralHttpException(throwable.getMessage)))
-    }
-  }
-
-  private def getResponse(endpoint: String, queryParams: Option[Map[String, String]]): Future[HttpResponse] =
-    httpClient.singleRequest(request = createHttpRequest(config.apiUrl, endpoint, queryParams))
-
-  private def createHttpRequest(apiUrl: String, endpoint: String, queryParams: Option[Map[String, String]]): HttpRequest = {
-    val uri = Uri(apiUrl).withPath(Path(endpoint)).withQuery(Query(queryParams.getOrElse(Map.empty[String, String])))
-    logger.info(s"Calling url=$uri")
-    HttpRequest(uri = uri)
-  }
 
 }
 
 object PathOfExileHttpClient {
-  def apply(config: PathOfExileHttpConfig = PathOfExileHttpConfig.fromReference)(implicit actorSystem: ActorSystem, mat: Materializer): PathOfExileHttpClient =
+  def apply(config: PathOfExileHttpConfig = PathOfExileHttpConfig.fromReference)
+           (implicit actorSystem: ActorSystem, mat: Materializer): PathOfExileHttpClient =
     new PathOfExileHttpClient(config)
 
   object syntax {
-    implicit class Wrapper(val response: Future[Either[Future[HttpException], ResponseEntity]]) extends AnyVal {
+    implicit class Wrapper(val response: Future[Either[Future[HttpError], ResponseEntity]]) extends AnyVal {
       def as[T: Decoder](implicit mat: Materializer, um: Unmarshaller[ResponseEntity, T], ec: ExecutionContext) = {
         EitherT(response).map(httpResponse => Unmarshal(httpResponse).to[T]).value.flatMap(_.bisequence) //TODO: Recover here
       }

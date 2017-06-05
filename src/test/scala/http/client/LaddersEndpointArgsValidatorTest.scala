@@ -2,7 +2,7 @@ package http.client
 
 import cats.data.Validated.invalidNel
 import common.PathOfExileTestSuite
-import exception.{BadDifficultyException, BadLimitException, BadStartException}
+import exception.{BadDifficulty, BadLimit, BadStart}
 import models.ladders.LadderType.{LABYRINTH, PVP}
 import models.leagues.LadderDifficulty.CRUEL
 
@@ -14,19 +14,19 @@ class LaddersEndpointArgsValidatorTest extends PathOfExileTestSuite {
     "validate Limit is less than 200" in {
       val response = pathOfExileClient.getLadder(SampleId, limit = Some(201))
       response.isInvalid shouldBe true
-      response shouldBe invalidNel(BadLimitException(s"The value of limit can not be greater than 200"))
+      response shouldBe invalidNel(BadLimit(s"The value of limit can not be greater than 200"))
     }
 
     "validate difficulty is not set when type is LABYRINTH" in {
       val response = pathOfExileClient.getLadder(SampleId, `type` = Some(PVP), difficulty = Some(CRUEL))
       response.isInvalid shouldBe true
-      response shouldBe invalidNel(BadDifficultyException("Difficulty can only be set when type is Labyrinth"))
+      response shouldBe invalidNel(BadDifficulty("Difficulty can only be set when type is Labyrinth"))
     }
 
     "validate start is not set when type is LABYRINTH" in {
       val response = pathOfExileClient.getLadder(SampleId, `type` = Some(PVP), start = Some("sting"))
       response.isInvalid shouldBe true
-      response shouldBe invalidNel(BadStartException("Difficulty can only be set when type is Labyrinth"))
+      response shouldBe invalidNel(BadStart("Difficulty can only be set when type is Labyrinth"))
     }
 
   }

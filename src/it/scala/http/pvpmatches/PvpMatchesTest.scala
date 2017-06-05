@@ -1,7 +1,7 @@
 package http.pvpmatches
 
 import common.PathOfExileTestSuite
-import exception.HttpException
+import exception.HttpError
 import models.pvpmatches.PvpMatches
 import scala.concurrent.Future
 
@@ -11,7 +11,7 @@ class PvpMatchesTest
   "PvpMatches live response" should {
 
     "get a 200(Ok) and unmarshal to `PvpMatches` " in {
-      val response: Future[Either[HttpException, PvpMatches]] =
+      val response: Future[Either[HttpError, PvpMatches]] =
         pathOfExileClient.getPvpMatches()
 
         whenReady(response) { result =>
@@ -21,11 +21,13 @@ class PvpMatchesTest
     }
 
     "get a 200(Ok) and unmarshal to `pvpMatches` " in {
-      val response: Future[Either[HttpException, PvpMatches]] =
+      val response: Future[Either[HttpError, PvpMatches]] =
         pathOfExileClient.getPvpMatches(Some("EUPvPSeason1"))
 
         whenReady(response) { result =>
-          result.isRight shouldBe true
+          withClue(s"result was: $result") {
+            result.isRight shouldBe true
+          }
         }
 
     }

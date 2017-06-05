@@ -12,7 +12,9 @@ class StashesTest
       val response = pathOfExileClient.getStashes()
 
       whenReady(response){ result =>
+        withClue(s"result was: $result") {
           result.isRight shouldBe true
+        }
       }
     }
 
