@@ -1,0 +1,132 @@
+{
+	"variables": [],
+	"info": {
+		"name": "PathOfExile",
+		"_postman_id": "046e6eb6-a26d-9bcd-29b5-1e4e28bab29e",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "ladders",
+			"request": {
+				"url": "http://api.pathofexile.com/ladders/Standard",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "leagues",
+			"request": {
+				"url": "http://api.pathofexile.com/leagues ",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "league",
+			"request": {
+				"url": {
+					"raw": "http://api.pathofexile.com/leagues/?type=season&season=Medallion&compact=1",
+					"protocol": "http",
+					"auth": {},
+					"host": [
+						"api",
+						"pathofexile",
+						"com"
+					],
+					"path": [
+						"leagues",
+						""
+					],
+					"query": [
+						{
+							"key": "type",
+							"value": "season",
+							"equals": true,
+							"description": ""
+						},
+						{
+							"key": "season",
+							"value": "Medallion",
+							"equals": true,
+							"description": ""
+						},
+						{
+							"key": "compact",
+							"value": "1",
+							"equals": true,
+							"description": ""
+						}
+					],
+					"variable": []
+				},
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "league-rules",
+			"request": {
+				"url": "http://api.pathofexile.com/league-rules ",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "league-rule",
+			"request": {
+				"url": "http://api.pathofexile.com/league-rules/4",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "pvp-matches",
+			"request": {
+				"url": {
+					"raw": "http://api.pathofexile.com/pvp-matches?season=EUPvPSeason1",
+					"protocol": "http",
+					"auth": {},
+					"host": [
+						"api",
+						"pathofexile",
+						"com"
+					],
+					"path": [
+						"pvp-matches"
+					],
+					"query": [
+						{
+							"key": "season",
+							"value": "EUPvPSeason1",
+							"equals": true,
+							"description": ""
+						}
+					],
+					"variable": []
+				},
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}

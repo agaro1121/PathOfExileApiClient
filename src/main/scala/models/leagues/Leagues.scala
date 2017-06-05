@@ -13,10 +13,10 @@ case class League(
   url: Option[String],
   startAt: Option[String], //TODO: "2016-07-22T18:30:00Z" -> Change to proper date? JodaTime? Java Time?
   endAt: Option[String],
-  description: String,
+  description: Option[String],
   registerAt: Option[String],
-  rules: List[Rule],
-  event: Boolean,
+  rules: Option[List[Rule]],
+  event: Option[Boolean],
   ladder: Option[Ladder]
 )
 

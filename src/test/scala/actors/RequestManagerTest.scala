@@ -2,22 +2,16 @@ package actors
 
 import akka.actor.{ActorRefFactory, ActorSystem, PoisonPill, Props}
 import akka.testkit.{ImplicitSender, TestActorRef, TestKit, TestProbe}
+import common.PathOfExileTestSuite
 import org.scalatest.{BeforeAndAfterAll, Matchers, WordSpecLike}
 
 import scala.language.postfixOps
 
-class RequestManagerTest extends TestKit(ActorSystem("RequestManagerTest"))
-  with WordSpecLike with Matchers with ImplicitSender with BeforeAndAfterAll {
+class RequestManagerTest
+  extends PathOfExileTestSuite
+    with ImplicitSender
+    with BeforeAndAfterAll {
 
-  import system.dispatcher
-
-
-  override protected def afterAll(): Unit = {
-    system.terminate()
-      .andThen{
-        case _ => super.afterAll()
-      }
-  }
 
   val fakeChild = TestProbe("TestProbe")
 
@@ -25,10 +19,10 @@ class RequestManagerTest extends TestKit(ActorSystem("RequestManagerTest"))
 
     "create a new secretary per job" in {
       val requestOwner: TestActorRef[RequestOwner] =
-        TestActorRef(Props(classOf[RequestOwner], (_: ActorRefFactory) => fakeChild.ref), "RequestOwner")
+        TestActorRef(Props(classOf[RequestOwner], (_: ActorRefFactory) => fakeChild.ref), "RequestOwner1")
 
       val requestManager: TestActorRef[RequestManager] =
-        TestActorRef(Props(classOf[RequestManager], (_: ActorRefFactory) => requestOwner), "RequestManager")
+        TestActorRef(Props(classOf[RequestManager], (_: ActorRefFactory) => requestOwner), "RequestManager1")
 
       requestManager ! RequestManager.StartNewJob
       requestManager.underlyingActor.secretaries.size shouldBe 1
@@ -37,7 +31,7 @@ class RequestManagerTest extends TestKit(ActorSystem("RequestManagerTest"))
 
     "send message to new secretary upon new job request" in {
       val requestManager: TestActorRef[RequestManager] =
-        TestActorRef(Props(classOf[RequestManager], (_: ActorRefFactory) => fakeChild.ref), "RequestManager")
+        TestActorRef(Props(classOf[RequestManager], (_: ActorRefFactory) => fakeChild.ref), "RequestManager2")
 
       requestManager ! RequestManager.StartNewJob
       fakeChild.expectMsgPF(){
@@ -47,10 +41,10 @@ class RequestManagerTest extends TestKit(ActorSystem("RequestManagerTest"))
 
     "watch the lifecycle of a new secretary" in {
       val requestOwner: TestActorRef[RequestOwner] =
-        TestActorRef(Props(classOf[RequestOwner], (_: ActorRefFactory) => fakeChild.ref), "RequestOwner")
+        TestActorRef(Props(classOf[RequestOwner], (_: ActorRefFactory) => fakeChild.ref), "RequestOwner3")
 
       val requestManager: TestActorRef[RequestManager] =
-        TestActorRef(Props(classOf[RequestManager], (_: ActorRefFactory) => requestOwner), "RequestManager")
+        TestActorRef(Props(classOf[RequestManager], (_: ActorRefFactory) => requestOwner), "RequestManager3")
 
       requestManager ! RequestManager.StartNewJob
       requestManager.underlyingActor.secretaries.size shouldBe 1

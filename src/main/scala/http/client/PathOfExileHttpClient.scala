@@ -64,7 +64,7 @@ class PathOfExileHttpClient(config: PathOfExileHttpConfig)(implicit actorSystem:
     season: Option[String] = None,
     compact: Option[Int] = None,
     limit: Option[Int] = None,
-    offset: Option[Int] = Some(0)
+    offset: Option[Int] = None
   ): ValidatedNel[BadLeaguesEndpointArgument, Future[Either[HttpException, Leagues]]] = {
 
     (validateSeason(`type`, season) |@| validateCompact(compact) |@| validateLimit(compact, limit)).map {
@@ -164,7 +164,7 @@ class PathOfExileHttpClient(config: PathOfExileHttpConfig)(implicit actorSystem:
     `type`: Option[LadderType] = None,
     track: Option[Boolean] = None,
     difficulty: Option[LadderDifficulty] = None,
-    start: Option[String] = None //TODO: valide this is a proper timestamp !!!!
+    start: Option[String] = None //TODO: validate this is a proper timestamp !!!!
   ): ValidatedNel[BadLaddersEndpointArgument, Future[Either[HttpException, Ladder]]] = {
 
     (validateLimit(limit) |@| validateDifficulty(`type`, difficulty) |@| validateStart(`type`, start)).map {
