@@ -1,4 +1,4 @@
-package models
+package models.stashes
 
 import shapeless._
 

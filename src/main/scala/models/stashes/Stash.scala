@@ -1,7 +1,7 @@
-package models
+package models.stashes
 
 case class Stash(
-  accountName: Option[String], //TODO: optional?
+  accountName: Option[String],
   lastCharacterName: String,
   id: String,
   stash: String,

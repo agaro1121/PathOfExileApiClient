@@ -1,4 +1,4 @@
-package models
+package models.stashes
 
 case class Item(
   verified: Boolean,

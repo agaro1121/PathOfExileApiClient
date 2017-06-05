@@ -4,7 +4,7 @@ import akka.actor.Actor
 import akka.stream.ActorMaterializer
 import http.client.PathOfExileHttpClient
 import com.typesafe.scalalogging.LazyLogging
-import config.Config
+import config.PathOfExileHttpConfig
 
 object PathOfExileActor {
   case class GetStash(stashId: Option[String])
@@ -23,9 +23,9 @@ class PathOfExileActor extends Actor with LazyLogging {
     case GetStash(optionalStashId) =>
       val requestOwner = sender()
       val stashId = optionalStashId
-      var retries = Config.fromReference.clientRetries
+      var retries = PathOfExileHttpConfig.fromReference.retries
 
-      client.getApiResponse(optionalStashId)
+      client.getStashes(optionalStashId)
         .foreach {
           case Left(exception) =>
             if (retries > 0) {
