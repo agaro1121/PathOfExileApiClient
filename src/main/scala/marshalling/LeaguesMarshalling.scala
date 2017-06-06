@@ -1,8 +1,7 @@
 package marshalling
 
 import java.time.format.DateTimeFormatter
-import java.time.{Instant, ZonedDateTime}
-
+import java.time.ZonedDateTime
 import de.heikoseeberger.akkahttpcirce.CirceSupport
 import io.circe.generic.semiauto._
 import io.circe._
