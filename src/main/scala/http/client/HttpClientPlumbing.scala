@@ -45,7 +45,7 @@ trait HttpClientPlumbing extends LazyLogging {
   }
 
   protected def getResponse(endpoint: String, queryParams: Option[Map[String, String]]): Future[HttpResponse] =
-    httpClient.singleRequest(request = createHttpRequest(config.apiUrl, endpoint, queryParams))
+    httpClient.singleRequest(request = createHttpRequest(config.`api-url`, endpoint, queryParams))
 
   protected def createHttpRequest(apiUrl: String, endpoint: String, queryParams: Option[Map[String, String]]): HttpRequest = {
     val uri = Uri(apiUrl).withPath(Path(endpoint)).withQuery(Query(queryParams.getOrElse(Map.empty[String, String])))

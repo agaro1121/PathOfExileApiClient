@@ -1,11 +1,12 @@
 package config
 
-import com.typesafe.config.ConfigFactory
-
-//TODO: Replace with a config library like case-classy or ciris(https://cir.is)
+import classy.generic._
+import classy.config._
+import com.typesafe.config.{Config, ConfigFactory}
+import exception.MissingConfiguration
 
 case class PathOfExileHttpConfig(
-  apiUrl: String,
+  `api-url`: String,
   `public-stash-tabs`: String,
   leagues: String,
   `league-rules`: String,
@@ -16,19 +17,15 @@ case class PathOfExileHttpConfig(
 
 object PathOfExileHttpConfig {
 
-  lazy val fromReference: PathOfExileHttpConfig = {
-    val reference = ConfigFactory.defaultReference()
-    val pathOfExileConfig = reference.getConfig("path-of-exile")
-
-    PathOfExileHttpConfig(
-      apiUrl = pathOfExileConfig.getString("url"),
-      `public-stash-tabs` = pathOfExileConfig.getString("public-stash-tabs"),
-      leagues = pathOfExileConfig.getString("leagues"),
-      `league-rules` = pathOfExileConfig.getString("league-rules"),
-      ladders = pathOfExileConfig.getString("ladders"),
-      `pvp-matches` = pathOfExileConfig.getString("pvp-matches"),
-      retries = pathOfExileConfig.getInt("retries")
-    )
+  lazy val default: PathOfExileHttpConfig = {
+    val decoder = deriveDecoder[Config, PathOfExileHttpConfig]
+    val typeSafeConfig = ConfigFactory.defaultReference().getConfig("path-of-exile")
+    decoder(typeSafeConfig) match {
+      case Left(error) =>
+        System.err.println("config error: " + error)
+        throw MissingConfiguration(error.toString)
+      case Right(pathOfExileHttpConfig) => pathOfExileHttpConfig
+    }
   }
 
 }

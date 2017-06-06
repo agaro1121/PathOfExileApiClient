@@ -23,7 +23,7 @@ class PathOfExileActor extends Actor with LazyLogging {
     case GetStash(optionalStashId) =>
       val requestOwner = sender()
       val stashId = optionalStashId
-      var retries = PathOfExileHttpConfig.fromReference.retries
+      var retries = PathOfExileHttpConfig.default.retries
 
       client.getStashes(optionalStashId)
         .foreach {

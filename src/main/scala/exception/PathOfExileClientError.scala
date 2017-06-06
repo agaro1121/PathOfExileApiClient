@@ -22,3 +22,5 @@ sealed trait BadLaddersEndpointArgument extends PathOfExileClientError
 final case class BadLimit(msg: String) extends BadLaddersEndpointArgument
 final case class BadDifficulty(msg: String) extends BadLaddersEndpointArgument
 final case class BadStart(msg: String) extends BadLaddersEndpointArgument
+
+final case class MissingConfiguration(msg: String) extends Exception(msg) with PathOfExileClientError

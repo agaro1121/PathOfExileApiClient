@@ -214,7 +214,7 @@ class PathOfExileHttpClient(val config: PathOfExileHttpConfig)(implicit val acto
 }
 
 object PathOfExileHttpClient {
-  def apply(config: PathOfExileHttpConfig = PathOfExileHttpConfig.fromReference)
+  def apply(config: PathOfExileHttpConfig = PathOfExileHttpConfig.default)
            (implicit actorSystem: ActorSystem, mat: Materializer): PathOfExileHttpClient =
     new PathOfExileHttpClient(config)
 
