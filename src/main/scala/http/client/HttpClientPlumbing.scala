@@ -19,7 +19,7 @@ trait HttpClientPlumbing extends LazyLogging {
   protected implicit def mat: Materializer
   protected implicit val ec: ExecutionContext = actorSystem.dispatcher
 
-  protected def getAndHandleResponse(endpoint: String, queryParams: Option[Map[String, String]]): Future[Either[Future[HttpError], ResponseEntity]] =
+  protected def getAndHandleResponse(endpoint: String, queryParams: Option[Map[String, String]] = None): Future[Either[Future[HttpError], ResponseEntity]] =
     handleResponse(getResponse(endpoint, queryParams))
 
   protected def handleResponse(response: Future[HttpResponse]): Future[Either[Future[HttpError], ResponseEntity]] = {

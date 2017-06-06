@@ -3,14 +3,14 @@ package http.client
 import java.time.ZonedDateTime
 import cats.data.Validated.{invalidNel, valid}
 import cats.data.ValidatedNel
-import exception._
+import exception.{BadDifficulty, BadLadderEndpointArgument, BadLimit, BadStart}
 import models.ladders.LadderType
 import models.ladders.LadderType.LABYRINTH
 import models.leagues.LadderDifficulty
 
-trait LaddersEndpointArgsValidator {
+trait LadderEndpointArgsValidator {
 
-  def validateLimit(limit: Option[Int]): ValidatedNel[BadLaddersEndpointArgument, Option[Int]] = {
+  def validateLimit(limit: Option[Int]): ValidatedNel[BadLadderEndpointArgument, Option[Int]] = {
     val MaxLimit = 200
 
     limit match {
@@ -21,7 +21,7 @@ trait LaddersEndpointArgsValidator {
   }
 
   def validateDifficulty(`type`: Option[LadderType], difficulty: Option[LadderDifficulty]):
-    ValidatedNel[BadDifficulty, Option[LadderDifficulty]] = {
+    ValidatedNel[BadLadderEndpointArgument, Option[LadderDifficulty]] = {
       (`type`, difficulty) match {
         case (Some(someType), Some(_)) if !(someType == LABYRINTH) =>
           invalidNel(BadDifficulty("Difficulty can only be set when type is Labyrinth"))
@@ -31,7 +31,7 @@ trait LaddersEndpointArgsValidator {
     }
 
   def validateStart(`type`: Option[LadderType], start: Option[ZonedDateTime]):
-    ValidatedNel[BadStart, Option[ZonedDateTime]] = {
+    ValidatedNel[BadLadderEndpointArgument, Option[ZonedDateTime]] = {
       (`type`, start) match {
         case (Some(someType), Some(_)) if !(someType == LABYRINTH) =>
           invalidNel(BadStart("Difficulty can only be set when type is Labyrinth"))

@@ -1,13 +1,12 @@
 package marshalling
 
-import de.heikoseeberger.akkahttpcirce.CirceSupport
 import io.circe.generic.semiauto._
 import io.circe.{Decoder, Encoder}
 import models.stashes._
 import io.circe.shapes._
 
 
-trait StashesMarshalling extends CirceSupport {
+trait StashesMarshalling {
 
   implicit protected lazy val PropertyDecoder: Decoder[Property] = deriveDecoder[Property]
   implicit protected lazy val PropertyEncoder: Encoder[Property] = deriveEncoder[Property]

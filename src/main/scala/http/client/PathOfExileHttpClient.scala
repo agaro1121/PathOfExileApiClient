@@ -166,7 +166,7 @@ class PathOfExileHttpClient(val config: PathOfExileHttpConfig)(implicit val acto
     track: Option[Boolean] = None,
     difficulty: Option[LadderDifficulty] = None,
     start: Option[ZonedDateTime] = None
-  ): ValidatedNel[BadLaddersEndpointArgument, Future[Either[HttpError, Ladder]]] = {
+  ): ValidatedNel[BadLadderEndpointArgument, Future[Either[HttpError, Ladder]]] = {
 
     (validateLimit(limit) |@| validateDifficulty(`type`, difficulty) |@| validateStart(`type`, start)).map {
       (validLimit, validDifficulty, validStart) =>
@@ -191,7 +191,7 @@ class PathOfExileHttpClient(val config: PathOfExileHttpConfig)(implicit val acto
    *
    */
   def getLeagueRules: Future[Either[HttpError, LeagueRules]] =
-    getAndHandleResponse(config.`league-rules`, None).as[LeagueRules]
+    getAndHandleResponse(config.`league-rules`).as[LeagueRules]
 
   /**
    * Get a single league rule by id.

@@ -1,3 +1,5 @@
+import de.heikoseeberger.akkahttpcirce.CirceSupport
+
 package object marshalling {
 
   trait AllMarshalling
@@ -6,5 +8,6 @@ package object marshalling {
       with LeaguesMarshalling
       with PvpMatchesMarshalling
       with StashesMarshalling
+      with CirceSupport
 
 }

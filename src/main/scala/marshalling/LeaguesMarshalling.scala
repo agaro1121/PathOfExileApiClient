@@ -2,14 +2,13 @@ package marshalling
 
 import java.time.format.DateTimeFormatter
 import java.time.ZonedDateTime
-import de.heikoseeberger.akkahttpcirce.CirceSupport
 import io.circe.generic.semiauto._
 import io.circe._
 import models.leagues.{League, Leagues, Rule}
 import io.circe.syntax._
 import cats.syntax.either._
 
-trait LeaguesMarshalling extends LadderMarshalling with CirceSupport {
+trait LeaguesMarshalling extends LadderMarshalling {
 
   implicit val ZonedDateTimeEncoder: Encoder[ZonedDateTime] = Encoder.encodeString.contramap[ZonedDateTime](zdt => DateTimeFormatter.ISO_INSTANT.format(zdt))
   implicit protected lazy val ZonedDateTimeDecoder: Decoder[ZonedDateTime] = Decoder.decodeString.emap { str =>

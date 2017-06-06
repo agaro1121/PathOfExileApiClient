@@ -3,7 +3,7 @@ package http
 package object client {
 
   trait AllValidators
-    extends LaddersEndpointArgsValidator
+    extends LadderEndpointArgsValidator
     with LeagueEndpointArgsValidators
     with LeaguesEndpointArgsValidators
 

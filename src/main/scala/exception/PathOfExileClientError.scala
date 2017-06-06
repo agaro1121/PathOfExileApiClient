@@ -18,9 +18,9 @@ final case class BadLadder(msg: String) extends BadLeagueEndpointArgument
 final case class BadLadderLimit(msg: String) extends BadLeagueEndpointArgument
 final case class BadLadderTrack(msg: String) extends BadLeagueEndpointArgument
 
-sealed trait BadLaddersEndpointArgument extends PathOfExileClientError
-final case class BadLimit(msg: String) extends BadLaddersEndpointArgument
-final case class BadDifficulty(msg: String) extends BadLaddersEndpointArgument
-final case class BadStart(msg: String) extends BadLaddersEndpointArgument
+sealed trait BadLadderEndpointArgument extends PathOfExileClientError
+final case class BadLimit(msg: String) extends BadLadderEndpointArgument
+final case class BadDifficulty(msg: String) extends BadLadderEndpointArgument
+final case class BadStart(msg: String) extends BadLadderEndpointArgument
 
 final case class MissingConfiguration(msg: String) extends Exception(msg) with PathOfExileClientError

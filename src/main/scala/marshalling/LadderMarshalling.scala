@@ -1,11 +1,10 @@
 package marshalling
 
-import de.heikoseeberger.akkahttpcirce.CirceSupport
 import io.circe.{Decoder, Encoder}
 import io.circe.generic.semiauto.{deriveDecoder, deriveEncoder}
 import models.ladders.{Account, Challenges, Entries, Ladder, Twitch, Character}
 
-trait LadderMarshalling extends CirceSupport {
+trait LadderMarshalling {
   implicit protected lazy val CharacterDecoder: Decoder[Character] = deriveDecoder[Character]
   implicit protected lazy val CharacterEncoder: Encoder[Character] = deriveEncoder[Character]
 
