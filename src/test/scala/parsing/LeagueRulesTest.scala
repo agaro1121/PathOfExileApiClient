@@ -14,7 +14,6 @@ class LeagueRulesTest
 
       val json = parse(payloads.LeagueRules.payload)
       val leagueRulesParseResult = json.map(_.as[LeagueRules])
-      println(leagueRulesParseResult)
       leagueRulesParseResult.isRight shouldBe true
       leagueRulesParseResult.foreach { decoderResult =>
         decoderResult.isRight shouldBe true
@@ -30,7 +29,6 @@ class LeagueRulesTest
 
       val json = parse(payloads.LeagueRule.payload)
       val leagueRuleParseResult = json.map(_.as[LeagueRule])
-      println(leagueRuleParseResult)
       leagueRuleParseResult.isRight shouldBe true
       leagueRuleParseResult.foreach { decoderResult =>
         decoderResult.isRight shouldBe true

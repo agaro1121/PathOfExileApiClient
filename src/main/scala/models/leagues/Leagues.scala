@@ -1,6 +1,7 @@
 package models.leagues
 
-import java.time.Instant
+import java.time.ZonedDateTime
+
 import models.ladders.Ladder
 
 case class Rule(
@@ -12,7 +13,7 @@ case class Rule(
 case class League(
   id: String,
   url: Option[String],
-  startAt: Option[Instant],
+  startAt: Option[ZonedDateTime],
   endAt: Option[String],
   description: Option[String],
   registerAt: Option[String],

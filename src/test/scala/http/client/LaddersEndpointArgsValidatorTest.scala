@@ -1,10 +1,10 @@
 package http.client
 
-import java.time.Instant
+import java.time.ZonedDateTime
 import cats.data.Validated.invalidNel
 import common.PathOfExileTestSuite
 import exception.{BadDifficulty, BadLimit, BadStart}
-import models.ladders.LadderType.{LABYRINTH, PVP}
+import models.ladders.LadderType.PVP
 import models.leagues.LadderDifficulty.CRUEL
 
 class LaddersEndpointArgsValidatorTest extends PathOfExileTestSuite {
@@ -25,7 +25,7 @@ class LaddersEndpointArgsValidatorTest extends PathOfExileTestSuite {
     }
 
     "validate start is not set when type is LABYRINTH" in {
-      val response = pathOfExileClient.getLadder(SampleId, `type` = Some(PVP), start = Some(Instant.now))
+      val response = pathOfExileClient.getLadder(SampleId, `type` = Some(PVP), start = Some(ZonedDateTime.now))
       response.isInvalid shouldBe true
       response shouldBe invalidNel(BadStart("Difficulty can only be set when type is Labyrinth"))
     }
