@@ -9,7 +9,7 @@ Path of exile provides an api for downloading the following:
 - Ladder
 - League Rules
 
-This client knows how to talk to those APIs
+This client knows how to talk to those APIs.  
 Just simply provide an actor system and Materializer
 
 
