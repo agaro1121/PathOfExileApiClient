@@ -1,5 +1,6 @@
 package models.leagues
 
+import java.time.Instant
 import models.ladders.Ladder
 
 case class Rule(
@@ -11,7 +12,7 @@ case class Rule(
 case class League(
   id: String,
   url: Option[String],
-  startAt: Option[String], //TODO: "2016-07-22T18:30:00Z" -> Change to proper date? JodaTime? Java Time?
+  startAt: Option[Instant],
   endAt: Option[String],
   description: Option[String],
   registerAt: Option[String],

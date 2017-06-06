@@ -1,5 +1,6 @@
 package http.client
 
+import java.time.Instant
 import cats.data.Validated.{invalidNel, valid}
 import cats.data.ValidatedNel
 import exception._
@@ -29,8 +30,8 @@ trait LaddersEndpointArgsValidator {
       }
     }
 
-  def validateStart(`type`: Option[LadderType], start: Option[String]):
-    ValidatedNel[BadStart, Option[String]] = {
+  def validateStart(`type`: Option[LadderType], start: Option[Instant]):
+    ValidatedNel[BadStart, Option[Instant]] = {
       (`type`, start) match {
         case (Some(someType), Some(_)) if !(someType == LABYRINTH) =>
           invalidNel(BadStart("Difficulty can only be set when type is Labyrinth"))

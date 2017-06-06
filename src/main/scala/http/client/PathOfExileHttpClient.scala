@@ -1,5 +1,6 @@
 package http.client
 
+import java.time.Instant
 import scala.concurrent.{ExecutionContext, Future}
 import akka.actor.ActorSystem
 import akka.http.scaladsl.unmarshalling.{Unmarshal, Unmarshaller}
@@ -164,7 +165,7 @@ class PathOfExileHttpClient(val config: PathOfExileHttpConfig)(implicit val acto
     `type`: Option[LadderType] = None,
     track: Option[Boolean] = None,
     difficulty: Option[LadderDifficulty] = None,
-    start: Option[String] = None //TODO: validate this is a proper timestamp !!!!
+    start: Option[Instant] = None
   ): ValidatedNel[BadLaddersEndpointArgument, Future[Either[HttpError, Ladder]]] = {
 
     (validateLimit(limit) |@| validateDifficulty(`type`, difficulty) |@| validateStart(`type`, start)).map {
@@ -176,7 +177,7 @@ class PathOfExileHttpClient(val config: PathOfExileHttpConfig)(implicit val acto
           `type`.map(t => "`type`" -> t.toString),
           track.map(t => "track" -> t.toString),
           validDifficulty.map(d => "difficulty" -> d.toString),
-          validStart.map(s => "start" -> s)
+          validStart.map(s => "start" -> s.toString)
         ).flatten.toMap + (("id", id))
 
         getAndHandleResponse(config.ladders, Some(queryParams)).as[Ladder]
