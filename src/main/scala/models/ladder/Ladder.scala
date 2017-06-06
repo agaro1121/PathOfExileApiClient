@@ -1,4 +1,4 @@
-package models.ladders
+package models.ladder
 
 case class Character(
   name: String,

@@ -6,7 +6,7 @@ case class Item(
   h: Double,
   ilvl: Double,
   icon: String,
-  league: String,
+  league: String, //TODO: Can this be resolved with the LeagueType Enum ?
   id: String,
   sockets: List[Socket],
   name: String,

@@ -2,7 +2,7 @@ package models.leagues
 
 import java.time.ZonedDateTime
 
-import models.ladders.Ladder
+import models.ladder.Ladder
 
 case class Rule(
   id: Int,

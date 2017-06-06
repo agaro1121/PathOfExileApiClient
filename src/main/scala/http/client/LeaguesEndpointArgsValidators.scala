@@ -8,7 +8,7 @@ import models.leagues.LeagueType.SEASON
 
 trait LeaguesEndpointArgsValidators {
 
-  def validateSeason(`type`: Option[LeagueType], season: Option[String]): ValidatedNel[BadLeaguesEndpointArgument, Option[String]] = {
+  protected def validateSeason(`type`: Option[LeagueType], season: Option[String]): ValidatedNel[BadLeaguesEndpointArgument, Option[String]] = {
     (`type`, season) match {
       case (Some(SEASON), None) =>
         invalidNel(SeasonNotSpecified("You must specify a season when type=SEASON"))
@@ -16,7 +16,7 @@ trait LeaguesEndpointArgsValidators {
     }
   }
 
-  def validateCompact(compact: Option[Int]): ValidatedNel[BadLeaguesEndpointArgument, Option[Int]] = {
+  protected def validateCompact(compact: Option[Int]): ValidatedNel[BadLeaguesEndpointArgument, Option[Int]] = {
     compact match {
       case Some(value) if !(value == 0 || value == 1) =>
         invalidNel(BadLeagueCompact(s"The value of compact can only be zero or 1"))
@@ -24,7 +24,7 @@ trait LeaguesEndpointArgsValidators {
     }
   }
 
-  def validateLimit(compact: Option[Int], limit: Option[Int]): ValidatedNel[BadLeaguesEndpointArgument, Option[Int]] = {
+  protected def validateLimit(compact: Option[Int], limit: Option[Int]): ValidatedNel[BadLeaguesEndpointArgument, Option[Int]] = {
     val MaxLimitWhenCompactIsZero: Int = 50
     val MaxLimitWhenCompactIsOne: Int = 230
 

@@ -2,7 +2,7 @@ package marshalling
 
 import io.circe.{Decoder, Encoder}
 import io.circe.generic.semiauto.{deriveDecoder, deriveEncoder}
-import models.ladders.{Account, Challenges, Entries, Ladder, Twitch, Character}
+import models.ladder.{Account, Challenges, Entries, Ladder, Twitch, Character}
 
 trait LadderMarshalling {
   implicit protected lazy val CharacterDecoder: Decoder[Character] = deriveDecoder[Character]

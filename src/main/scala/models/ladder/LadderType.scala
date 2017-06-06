@@ -1,4 +1,4 @@
-package models.ladders
+package models.ladder
 
 sealed trait LadderType {
   override def toString: String = getClass.getSimpleName.toLowerCase.replace("$","")

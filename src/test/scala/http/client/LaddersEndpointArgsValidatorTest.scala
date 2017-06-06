@@ -4,7 +4,7 @@ import java.time.ZonedDateTime
 import cats.data.Validated.invalidNel
 import common.PathOfExileTestSuite
 import exception.{BadDifficulty, BadLimit, BadStart}
-import models.ladders.LadderType.PVP
+import models.ladder.LadderType.PVP
 import models.leagues.LadderDifficulty.CRUEL
 
 class LaddersEndpointArgsValidatorTest extends PathOfExileTestSuite {

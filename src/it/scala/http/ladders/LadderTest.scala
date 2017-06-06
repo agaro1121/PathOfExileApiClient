@@ -3,7 +3,7 @@ package http.ladders
 import cats.data.ValidatedNel
 import common.PathOfExileTestSuite
 import exception.{BadLadderEndpointArgument, HttpError}
-import models.ladders.Ladder
+import models.ladder.Ladder
 import scala.concurrent.Future
 
 //TODO add tests for good combinations of query params

@@ -3,7 +3,7 @@ package parsing
 import common.PathOfExileTestSuite
 import io.circe.parser._
 import marshalling.LadderMarshalling
-import models.ladders.Ladder
+import models.ladder.Ladder
 
 class LadderTest
   extends PathOfExileTestSuite

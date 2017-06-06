@@ -10,7 +10,7 @@ import cats.syntax.either._
 
 trait LeaguesMarshalling extends LadderMarshalling {
 
-  implicit val ZonedDateTimeEncoder: Encoder[ZonedDateTime] = Encoder.encodeString.contramap[ZonedDateTime](zdt => DateTimeFormatter.ISO_INSTANT.format(zdt))
+  implicit protected val ZonedDateTimeEncoder: Encoder[ZonedDateTime] = Encoder.encodeString.contramap[ZonedDateTime](zdt => DateTimeFormatter.ISO_INSTANT.format(zdt))
   implicit protected lazy val ZonedDateTimeDecoder: Decoder[ZonedDateTime] = Decoder.decodeString.emap { str =>
     Either.catchNonFatal(ZonedDateTime.parse(str)).leftMap(_ => "Instant")
   }

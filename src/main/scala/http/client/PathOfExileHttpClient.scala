@@ -4,7 +4,7 @@ import java.time.ZonedDateTime
 import scala.concurrent.Future
 import akka.actor.ActorSystem
 import akka.stream.Materializer
-import models.ladders.{Ladder, LadderType}
+import models.ladder.{Ladder, LadderType}
 import models.leaguerules.{LeagueRule, LeagueRules}
 import models.pvpmatches.PvpMatches
 import config.PathOfExileHttpConfig
@@ -15,7 +15,8 @@ import cats.implicits._
 import cats.data.ValidatedNel
 import marshalling.AllMarshalling
 
-class PathOfExileHttpClient(val config: PathOfExileHttpConfig)(implicit val actorSystem: ActorSystem, val mat: Materializer)
+class PathOfExileHttpClient(val config: PathOfExileHttpConfig)
+                           (implicit protected val actorSystem: ActorSystem, protected val mat: Materializer)
   extends HttpClientPlumbing with AllMarshalling with AllValidators {
   /**
    *
