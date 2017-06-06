@@ -1,10 +1,8 @@
 package http.client
 
 import java.time.ZonedDateTime
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 import akka.actor.ActorSystem
-import akka.http.scaladsl.unmarshalling.{Unmarshal, Unmarshaller}
-import akka.http.scaladsl.model._
 import akka.stream.Materializer
 import models.ladders.{Ladder, LadderType}
 import models.leaguerules.{LeagueRule, LeagueRules}
@@ -13,16 +11,12 @@ import config.PathOfExileHttpConfig
 import models.stashes.Stashes
 import models.leagues.{LadderDifficulty, League, LeagueType, Leagues}
 import exception._
-import io.circe.Decoder
 import cats.implicits._
-import cats.data.{EitherT, Validated, ValidatedNel}
-import Validated._
+import cats.data.ValidatedNel
 import marshalling.AllMarshalling
 
 class PathOfExileHttpClient(val config: PathOfExileHttpConfig)(implicit val actorSystem: ActorSystem, val mat: Materializer)
   extends HttpClientPlumbing with AllMarshalling with AllValidators {
-  import PathOfExileHttpClient.syntax._
-
   /**
    *
    * Retrieves a list of stashes, accounts, and items as described above in the Introduction section.
@@ -218,12 +212,4 @@ object PathOfExileHttpClient {
   def apply(config: PathOfExileHttpConfig = PathOfExileHttpConfig.default)
            (implicit actorSystem: ActorSystem, mat: Materializer): PathOfExileHttpClient =
     new PathOfExileHttpClient(config)
-
-  object syntax {
-    implicit class Wrapper(val response: Future[Either[Future[HttpError], ResponseEntity]]) extends AnyVal {
-      def as[T: Decoder](implicit mat: Materializer, um: Unmarshaller[ResponseEntity, T], ec: ExecutionContext) = {
-        EitherT(response).map(httpResponse => Unmarshal(httpResponse).to[T]).value.flatMap(_.bisequence) //TODO: Recover here
-      }
-    }
-  }
 }
