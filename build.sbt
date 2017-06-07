@@ -12,6 +12,7 @@ val root = project.in(file("."))
             .settings(commonSettings:_*)
             .settings(Defaults.itSettings: _*)
             .settings(libraryDependencies ++= Dependencies.all)
+            .settings(coverageEnabled := true)
 
 
 
