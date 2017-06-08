@@ -1,4 +1,4 @@
-# PathOfExileApiClient
+# Path Of Exile Api Client
 
 ## Description
 
@@ -51,7 +51,6 @@ import cats.data.Validated.{Invalid, Valid}
 import http.client.PathOfExileHttpClient
 import scala.concurrent.duration._
 import scala.language.postfixOps
-
 import scala.concurrent.Await
 
 object Main extends App {
@@ -66,11 +65,13 @@ object Main extends App {
 
   clientResponse match {
     case Valid(poeResponse) =>
+    
       val result = Await.result(poeResponse, 5 seconds)
       result match {
         case Left(httpError) => println(httpError)
         case Right(league) => println(league)
       }
+      
     case Invalid(errors) => println(errors)
   }
 
