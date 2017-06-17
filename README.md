@@ -2,6 +2,8 @@
 
 ## Description
 
+Scala client for the Path of Exile api
+
 Path of exile provides an api for downloading the following:
 - Stashes
 - PvP Matches
