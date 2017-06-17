@@ -1,6 +1,7 @@
 
 val commonSettings = Seq(
   name := "PathOfExileApiClient",
+  organization := "com.github.agaro1121",
   version := "0.1.0-SNAPSHOT",
   scalaVersion := "2.12.1"
 )
