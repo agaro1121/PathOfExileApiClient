@@ -24,8 +24,8 @@ publishTo := {
   }
 }
 
+bintrayPackage := name.value
 credentials ++= List(Path.userHome / ".bintray" / ".artifactory").filter(_.exists).map(Credentials(_)) //For snapshots
-
 pomIncludeRepository := { _ => false } //remove optional dependencies from our pom
 licenses += ("MIT", url("http://opensource.org/licenses/MIT"))
 homepage := Some(url("https://github.com/agaro1121/PathOfExileApiClient"))
@@ -34,5 +34,5 @@ developers := List(Developer("agaro1121", "Anthony Garo", "agaro1121@gmail.com",
 publishArtifact in Test := false
 bintrayReleaseOnPublish := false //We're releasing via travis, set to true to automatically release on publish instead
 publishMavenStyle := true
-bintrayRepository := "oss"
+bintrayRepository := "com.github.agaro1121"
 bintrayOrganization in bintray := None
