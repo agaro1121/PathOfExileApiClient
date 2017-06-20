@@ -12,6 +12,7 @@ object Dependencies {
     val AkkaHttpCirce = "1.12.0"
     val LogBack = "1.1.7"
     val CaseClassy = "0.4.0"
+    val Slf4jNop = "1.7.25"
   }
 
   lazy val AkkaHttp = "com.typesafe.akka" %% "akka-http" % Versions.AkkaHttp
@@ -37,15 +38,18 @@ object Dependencies {
     "com.47deg" %% "classy-generic"
   ).map(_ % Versions.CaseClassy)
 
+  val Slf4jNop = "org.slf4j" % "slf4j-nop" % Versions.Slf4jNop
+
   val all = Seq(
-      AkkaHttp,
-      AkkaStream,
-      AkkaTestkit,
-      AkkaHttpCirce,
-      ScalaTest,
-      Cats,
-      ScalaLogging,
-      Logback
+      AkkaHttp
+      ,AkkaStream
+      ,AkkaTestkit
+      ,AkkaHttpCirce
+      ,ScalaTest
+      ,Cats
+      ,ScalaLogging
+      ,Logback
+//      ,Slf4jNop
   ) ++ Circe ++ CaseClassy
 
 }

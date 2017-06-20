@@ -16,7 +16,4 @@ val root = project.in(file("."))
             .settings(Defaults.itSettings: _*)
             .settings(libraryDependencies ++= Dependencies.all)
             .settings(coverageEnabled := true)
-
-
-
-
+            .enablePlugins(GitVersioning)
